@@ -1,0 +1,39 @@
+---
+- name: Install prerequisites for Docker repository
+  ansible.builtin.apt:
+    pkg: "{{ docker_packages }}"  # and maybe  apt-transport-https package
+    state: latest
+    update_cache: yes
+  vars:
+    docker_packages: "{{ lookup('file', 'debian_dependencies').splitlines() }}"
+
+- name: Create keyrings folder
+  ansible.builtin.file:
+    path: "{{ keyrings_path }}"
+    state: directory
+    mode: '0755'
+
+- name: Add Docker GPG key
+  ansible.builtin.apt_key:
+    url: "{{ key_url }}"
+    validate_certs: true
+    keyring: "{{ keyring }}"
+    state: present
+
+- name: Set up Docker stable repository
+  ansible.builtin.apt_repository:
+    repo: deb [signed-by={{ keyring }}] {{ repo_url }} {{ ansible_distribution_release }} stable
+    state: present
+
+- name: Install Docker and Docker Compose v2
+  ansible.builtin.apt:
+    pkg: "{{ docker_packages }}"
+    state: latest
+    update_cache: yes
+  vars:
+    docker_packages: "{{ lookup('file', '../../../docker_packages').splitlines() }}"
+
+- name: Create docker group
+  ansible.builtin.group:
+    name: docker
+    state: present

@@ -1,0 +1,18 @@
+---
+- hosts: appservers
+  become: yes
+  vars:
+    docker_url: https://download.docker.com
+    repo_url: "{{ docker_url + '/' + ansible_system | lower + '/' + ansible_distribution | lower }}"
+
+  tasks:
+    - name: Install Docker and Docker Compose v2 on Debian
+      include_role:
+        name: install_docker_debian
+      when: ansible_facts['os_family']|lower == 'debian'
+
+    - name: Install Docker and Docker Compose v2 on RHEL
+      include_role:
+        name: install_docker_rhel
+      when: ansible_facts['os_family']|lower == 'redhat'
+

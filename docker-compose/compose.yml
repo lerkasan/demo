@@ -1,0 +1,23 @@
+services:
+  wordpress:
+    image: wordpress:latest
+    ports:
+      - 80:80
+    restart: always
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /run/apache2
+      - /run/lock
+    cap_drop:                # disable all capabilities
+      - ALL
+    cap_add:                 # enable only necessary capabilities
+      - NET_BIND_SERVICE
+      - CAP_DAC_OVERRIDE     #to allow apache2 write log files because it spawns workers with www-data user and group
+      - CAP_SETGID           #to allow apache2 switch its worker processes to www-data group
+      - CAP_SETUID           #to allow apache2 switch its worker processes to www-data user
+    environment:
+      - WORDPRESS_DB_HOST
+      - WORDPRESS_DB_NAME
+      - WORDPRESS_DB_USER
+      - WORDPRESS_DB_PASSWORD

@@ -1,0 +1,8 @@
+[bastions]
+${bastion}
+
+
+[appservers]
+%{ for server in appservers ~}
+${server}
+%{ endfor ~}

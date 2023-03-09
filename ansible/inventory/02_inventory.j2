@@ -1,0 +1,9 @@
+[bastions:vars]
+ansible_user=ubuntu
+ansible_ssh_private_key_file=~/.ssh/codica-demo_ed25519
+ansible_ssh_common_args='-o StrictHostKeyChecking=no'
+
+[appservers:vars]
+ansible_user=ubuntu
+ansible_ssh_private_key_file=~/.ssh/codica-demo_ed25519
+ansible_ssh_common_args='-o StrictHostKeyChecking=no -o ProxyCommand="ssh -W %h:%p -q ubuntu@{{ groups['bastions'][0] }}" -o UserKnownHostsFile=/dev/null -o CheckHostIP=no -o UpdateHostKeys=no -o LogLevel=quiet -q'

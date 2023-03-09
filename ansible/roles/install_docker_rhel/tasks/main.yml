@@ -1,0 +1,32 @@
+---
+- name: Install prerequisites for Docker repository
+  ansible.builtin.yum:
+    pkg: yum-utils
+    state: latest
+
+- name: Setup Docker stable repository
+  shell: yum-config-manager --add-repo "{{ docker_repo }}"
+  args:
+    creates: /etc/yum.repos.d/docker-ce.repo
+
+- name: Install Docker and Docker Compose v2
+  ansible.builtin.yum:
+    pkg: "{{ docker_packages }}"
+    state: latest
+    update_cache: yes
+  vars:
+    docker_packages: "{{ lookup('file', '../../../docker_packages').splitlines() }}"
+
+- name: Create docker group
+  ansible.builtin.group:
+    name: docker
+    state: present
+
+- name: Automatically start Docker and containerd on bootup
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    state: started
+    enabled: true
+  loop:
+    - docker.service
+    - containerd.service

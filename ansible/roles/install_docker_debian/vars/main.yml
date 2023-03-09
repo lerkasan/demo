@@ -1,0 +1,6 @@
+docker_url: https://download.docker.com
+repo_url: "{{ docker_url + '/' + ansible_system | lower + '/' + ansible_distribution | lower }}"
+
+keyrings_path: /etc/apt/keyrings
+keyring: "{{ keyrings_path + '/docker.gpg' }}"
+key_url: "{{ repo_url + '/gpg' }}"

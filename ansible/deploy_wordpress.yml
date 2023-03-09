@@ -1,0 +1,31 @@
+---
+- name: Deploy Wordpress using Docker Compose
+  hosts: appservers
+  become: yes
+
+  vars:
+    compose_path: ../docker-compose/compose.yml
+    app_dir: wordpress-app
+
+  environment:
+    WORDPRESS_DB_HOST: "{{ lookup('aws_ssm', 'demo_database_host') }}"
+    WORDPRESS_DB_NAME: "{{ lookup('aws_ssm', 'demo_database_name') }}"
+    WORDPRESS_DB_USER: "{{ lookup('aws_ssm', 'demo_database_username') }}"
+    WORDPRESS_DB_PASSWORD: "{{ lookup('aws_ssm', 'demo_database_password') }}"
+
+  tasks:
+    - name: Create wordpress dir
+      ansible.builtin.file:
+        path: "{{ app_dir }}"
+        state: directory
+
+    - name: Copy compose file
+      ansible.builtin.copy:
+        src: "{{ compose_path }}"
+        dest: "{{ app_dir }}"
+        mode: '0644'
+
+    - name: Run docker compose to start Wordpress container
+      ansible.builtin.shell: docker compose up --detach
+      args:
+        chdir: "{{ app_dir }}"
