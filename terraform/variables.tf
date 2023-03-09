@@ -1,8 +1,8 @@
-variable "allowed_account_ids" {
-  description = "List of allowed AWS account ids where resources can be created"
-  type        = list(string)
-  sensitive   = true
-}
+//variable "allowed_account_ids" {
+//  description = "List of allowed AWS account ids where resources can be created"
+//  type        = list(string)
+//  sensitive   = true
+//}
 
 variable "aws_region" {
   description   = "AWS region"
