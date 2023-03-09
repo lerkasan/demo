@@ -112,3 +112,8 @@ In order to make this infrastructure production-ready we will need to take addit
 - configure database read-replicas and standbys
 - configure firewalls, etc
 - configure backups
+
+## **To delete provisioned infrastructure:**
+
+Change directory to `terraform`
+and run `terraform destroy` and confirm actions.
